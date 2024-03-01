@@ -1,24 +1,27 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 require('dotenv').config();
 
 const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID;
 
-console.log(GA_MEASUREMENT_ID);
-
-export function trackEvent(userId: string, event: string): void {
-  const payload = {
-    v: '1',
-    tid: GA_MEASUREMENT_ID,
-    cid: userId,
-    t: 'event',
-    ec: 'User Interaction',
-    ea: event,
+export async function trackEvent(userId: string, event: string): Promise<void> {
+  const trackingData = {
+    userId,
+    event,
+    timestamp: new Date().toISOString(),
   };
 
-  axios
-    .post('https://www.google-analytics.com/collect', null, { params: payload })
-    .then(() => console.log('Event sent to Google Analytics'))
-    .catch((error) =>
-      console.error('Error sending event to Google Analytics:', error)
-    );
+  try {
+    await axios.post('https://analytics-api.com/track', trackingData);
+    console.log('Event tracked successfully');
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    if (axiosError.response) {
+      console.error('Request failed with status:', axiosError.response.status);
+    } else if (axiosError.request) {
+      console.error('Request failed:', axiosError.request);
+    } else {
+      console.error('Error:', axiosError.message);
+    }
+    throw new Error('Failed to track event');
+  }
 }
