@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios';
 
-const NODE_GA_MEASUREMENT_ID = process.env.NODE_GA_MEASUREMENT_ID;
+const NODE_GA_MEASUREMENT_ID = process.env.NODE_GA_MEASUREMENT_ID!;
+const NODE_GOOGLE_ANALYTICS_API_URL =
+  process.env.NODE_GOOGLE_ANALYTICS_API_URL!;
 
 export async function trackApiEvent(
   userId: string,
@@ -23,7 +25,7 @@ export async function trackApiEvent(
 
   try {
     const response = await axios.post(
-      'https://www.google-analytics.com/collect',
+      NODE_GOOGLE_ANALYTICS_API_URL,
       trackingData
     );
     console.log('Event tracked successfully', response.data);
