@@ -1,16 +1,20 @@
 import axios, { AxiosError } from 'axios';
 
-const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID;
+const NODE_GA_MEASUREMENT_ID = process.env.NODE_GA_MEASUREMENT_ID!;
 
 export async function trackEvent(userId: string, event: string): Promise<void> {
   const trackingData = {
-    userId,
-    event,
-    timestamp: new Date().toISOString(),
+    v: '1',
+    tid: NODE_GA_MEASUREMENT_ID,
+    cid: userId,
+    t: 'event',
+    ec: 'yourEventCategory',
+    ea: event,
+    ev: '1',
   };
 
   try {
-    await axios.post('https://analytics-api.com/track', trackingData);
+    await axios.post('https://www.google-analytics.com/collect', trackingData);
     console.log('Event tracked successfully');
   } catch (error) {
     const axiosError = error as AxiosError;

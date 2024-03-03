@@ -7,10 +7,10 @@ import TrackingDataModel from './TrackingDataModel';
 import { trackEvent } from './googleAnalytics';
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI!;
+const NODE_MONGODB_URI = process.env.NODE_MONGODB_URI!;
 const PORT = process.env.PORT!;
 
-mongoose.connect(MONGODB_URI, {} as ConnectOptions);
+mongoose.connect(NODE_MONGODB_URI, {} as ConnectOptions);
 mongoose.connection.on(
   'error',
   console.error.bind(console, 'connection error:')

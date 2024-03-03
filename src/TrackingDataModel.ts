@@ -11,7 +11,7 @@ const TrackingDataSchema: Schema = new Schema({
   uniqueId: {
     type: String,
     required: true,
-    default: () => Math.random().toString(36).substr(2, 7),
+    default: () => Math.random().toString(36).substring(2, 7),
     index: { unique: true },
   },
   eventType: { type: String, required: true },
