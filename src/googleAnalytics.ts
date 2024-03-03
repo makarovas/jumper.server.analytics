@@ -1,8 +1,16 @@
 import axios, { AxiosError } from 'axios';
 
-const NODE_GA_MEASUREMENT_ID = process.env.NODE_GA_MEASUREMENT_ID!;
+const NODE_GA_MEASUREMENT_ID = process.env.NODE_GA_MEASUREMENT_ID;
 
-export async function trackEvent(userId: string, event: string): Promise<void> {
+export async function trackApiEvent(
+  userId: string,
+  event: string
+): Promise<void> {
+  if (!NODE_GA_MEASUREMENT_ID) {
+    console.error('GA_MEASUREMENT_ID is not defined');
+    return;
+  }
+
   const trackingData = {
     v: '1',
     tid: NODE_GA_MEASUREMENT_ID,
@@ -14,12 +22,20 @@ export async function trackEvent(userId: string, event: string): Promise<void> {
   };
 
   try {
-    await axios.post('https://www.google-analytics.com/collect', trackingData);
-    console.log('Event tracked successfully');
+    const response = await axios.post(
+      'https://www.google-analytics.com/collect',
+      trackingData
+    );
+    console.log('Event tracked successfully', response.data);
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response) {
-      console.error('Request failed with status:', axiosError.response.status);
+      console.error(
+        'Request failed with status:',
+        axiosError.response.status,
+        'Response:',
+        axiosError.response.data
+      );
     } else if (axiosError.request) {
       console.error('Request failed:', axiosError.request);
     } else {

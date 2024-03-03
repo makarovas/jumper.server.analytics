@@ -7,16 +7,17 @@ export interface ITrackingData extends Document {
   timestamp: Date;
 }
 
-const TrackingDataSchema: Schema = new Schema({
+const TrackingDataSchema = new Schema({
+  userId: { type: String, required: true },
+  eventType: { type: String, required: true },
+  eventData: { type: Schema.Types.Mixed, required: true },
+  timestamp: { type: Date, default: Date.now },
   uniqueId: {
     type: String,
     required: true,
     default: () => Math.random().toString(36).substring(2, 7),
-    index: { unique: true },
+    unique: true,
   },
-  eventType: { type: String, required: true },
-  eventData: { type: Schema.Types.Mixed },
-  timestamp: { type: Date, default: Date.now },
 });
 
 const TrackingDataModel: Model<ITrackingData> = mongoose.model<ITrackingData>(
