@@ -6,14 +6,18 @@ import TrackingDataModel from './TrackingDataModel';
 import { trackEvent } from './googleAnalytics';
 
 const MONGODB_URI = process.env.MONGODB_URI!;
-console.log(MONGODB_URI, 9999);
-const PORT = 8001;
+const PORT = process.env.PORT!;
 
 mongoose.connect(MONGODB_URI, {} as ConnectOptions);
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  console.log('Connected successfully');
+mongoose.connection.on(
+  'error',
+  console.error.bind(console, 'connection error:')
+);
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB');
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 });
 
 const newTrackingData = new TrackingDataModel({
@@ -96,11 +100,18 @@ app.post('/trackEventData', async (req: Request, res: Response) => {
       eventData,
     });
 
-    await newTrackingData.save();
-    res.status(200).send('Tracking data stored successfully');
+    newTrackingData
+      .save()
+      .then(() => {
+        res.status(200).send('Tracking data stored successfully');
+      })
+      .catch((error) => {
+        console.error('Error storing tracking data:', error);
+        res.status(500).send('An error occurred while storing tracking data');
+      });
   } catch (error) {
-    console.error('Error storing tracking data:', error);
-    res.status(500).send('An error occurred while storing tracking data');
+    console.error('Error saving tracking data:', error);
+    res.status(500).send('An error occurred while saving tracking data');
   }
 });
 
