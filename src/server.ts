@@ -2,8 +2,10 @@ import bodyParser from 'body-parser';
 import express, { Request, Response } from 'express';
 import mongoose, { ConnectOptions } from 'mongoose';
 
+import dotenv from 'dotenv';
 import TrackingDataModel from './TrackingDataModel';
 import { trackEvent } from './googleAnalytics';
+dotenv.config();
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 const PORT = process.env.PORT!;
@@ -21,21 +23,6 @@ mongoose.connection.once('open', () => {
 });
 
 const newTrackingData = new TrackingDataModel({
-  userId: 'user123',
-  eventType: 'click',
-  eventData: { action: 'button_click', page: 'homepage' },
-  timestamp: new Date(),
-});
-
-const newTrackingData2 = new TrackingDataModel({
-  userId: 'user122',
-  eventType: 'click',
-  eventData: { action: 'button_click', page: 'homepage' },
-  timestamp: new Date(),
-});
-
-const newTrackingData3 = new TrackingDataModel({
-  userId: 'user132',
   eventType: 'click',
   eventData: { action: 'button_click', page: 'homepage' },
   timestamp: new Date(),
@@ -50,23 +37,6 @@ newTrackingData
     console.log('Error saving tracking data:', error);
   });
 
-newTrackingData2
-  .save()
-  .then((result) => {
-    console.log('New tracking data saved successfully:', result);
-  })
-  .catch((error) => {
-    console.log('Error saving tracking data:', error);
-  });
-
-newTrackingData3
-  .save()
-  .then((result) => {
-    console.log('New tracking data saved successfully:', result);
-  })
-  .catch((error) => {
-    console.log('Error saving tracking data:', error);
-  });
 const app = express();
 
 app.use(express.json());
@@ -113,8 +83,4 @@ app.post('/trackEventData', async (req: Request, res: Response) => {
     console.error('Error saving tracking data:', error);
     res.status(500).send('An error occurred while saving tracking data');
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
 });

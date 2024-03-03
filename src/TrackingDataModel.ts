@@ -8,7 +8,12 @@ export interface ITrackingData extends Document {
 }
 
 const TrackingDataSchema: Schema = new Schema({
-  userId: { type: String, required: true },
+  uniqueId: {
+    type: String,
+    required: true,
+    default: () => Math.random().toString(36).substr(2, 7),
+    index: { unique: true },
+  },
   eventType: { type: String, required: true },
   eventData: { type: Schema.Types.Mixed },
   timestamp: { type: Date, default: Date.now },

@@ -1,5 +1,4 @@
 import axios, { AxiosError } from 'axios';
-require('dotenv').config();
 
 const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID;
 
