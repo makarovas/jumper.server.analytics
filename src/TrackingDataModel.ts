@@ -5,6 +5,8 @@ export interface ITrackingData extends Document {
   eventType: string;
   eventData: any;
   timestamp: Date;
+  sessionStart: Date;
+  sessionEnd: Date;
 }
 
 const TrackingDataSchema = new Schema({
@@ -12,6 +14,8 @@ const TrackingDataSchema = new Schema({
   eventType: { type: String, required: true },
   eventData: { type: Schema.Types.Mixed, required: true },
   timestamp: { type: Date, default: Date.now },
+  sessionStart: { type: Date, required: true },
+  sessionEnd: { type: Date, required: true },
   uniqueId: {
     type: String,
     required: true,
