@@ -26,6 +26,9 @@ app.use(express.json());
 
 app.post('/track', async (req: Request, res: Response) => {
   const { userId, event, eventData } = req.body;
+  const sessionStartTimestamp = new Date();
+  let sessionEndTimestamp = new Date();
+
   if (!userId || !event || !eventData) {
     return res.status(400).send('Missing userId, event, or eventData');
   }
@@ -35,11 +38,16 @@ app.post('/track', async (req: Request, res: Response) => {
       userId,
       eventType: event,
       eventData,
+      sessionStart: sessionStartTimestamp,
+      sessionEnd: new Date(sessionEndTimestamp.getTime() + 30 * 60000), 
       timestamp: new Date(),
     });
-    await newTrackingData.save();
 
-    await trackApiEvent(userId, event);
+    await newTrackingData.save();
+    await trackApiEvent(userId, event, {
+      sessionStart: sessionStartTimestamp,
+      sessionEnd: sessionEndTimestamp,
+    });
 
     res.status(200).send('Data saved and tracked successfully');
   } catch (error) {

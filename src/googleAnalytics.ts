@@ -6,7 +6,8 @@ const NODE_GOOGLE_ANALYTICS_API_URL =
 
 export async function trackApiEvent(
   userId: string,
-  event: string
+  event: string,
+  sessionData: any
 ): Promise<void> {
   if (!NODE_GA_MEASUREMENT_ID) {
     console.error('GA_MEASUREMENT_ID is not defined');
@@ -21,6 +22,8 @@ export async function trackApiEvent(
     ec: 'yourEventCategory',
     ea: event,
     ev: '1',
+    cd1: sessionData.sessionStart, // Custom dimension for session start
+    cd2: sessionData.sessionEnd, // Custom dimension for session end
   };
 
   try {
